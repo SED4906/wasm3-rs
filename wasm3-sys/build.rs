@@ -158,5 +158,7 @@ fn main() {
         },
     );
     cfg.flag("-fno-stack-protector");
+    cfg.flag("-nostdinc");
+    cfg.flag("-I../../musl-headers");
     cfg.compile("wasm3");
 }
