@@ -47,7 +47,7 @@ impl Runtime {
     }
 
     /// Parses and loads a module from bytes.
-    pub fn parse_and_load_module<TData: Into<Box<[u8]>>>(&self, bytes: TData) -> Result<Module> {
+    pub fn parse_and_load_module<TData: Into<Box<[u8]>>>(&self, bytes: TData) -> Result<Module<'_>> {
         Module::parse(&self.environment, bytes).and_then(|module| self.load_module(module))
     }
 
@@ -56,7 +56,7 @@ impl Runtime {
     /// # Errors
     ///
     /// This function will error if the module's environment differs from the one this runtime uses.
-    pub fn load_module(&self, module: ParsedModule) -> Result<Module> {
+    pub fn load_module(&self, module: ParsedModule) -> Result<Module<'_>> {
         if &self.environment != module.environment() {
             Err(Error::ModuleLoadEnvMismatch)
         } else {
@@ -74,7 +74,7 @@ impl Runtime {
     /// See [`Module::find_function`] for possible error cases.
     ///
     /// [`Module::find_function`]: ../module/struct.Module.html#method.find_function
-    pub fn find_function<ARGS, RET>(&self, name: &str) -> Result<Function<ARGS, RET>>
+    pub fn find_function<ARGS, RET>(&self, name: &str) -> Result<Function<'_, ARGS, RET>>
     where
         ARGS: crate::WasmArgs,
         RET: crate::WasmType,
